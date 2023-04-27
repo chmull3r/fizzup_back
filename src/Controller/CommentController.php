@@ -13,7 +13,7 @@ use App\Entity\Comment;
 
 class CommentController extends AbstractController
 {
-    #[Route('/', name: 'app_homepage')]
+    #[Route('/comment/new', name: 'app_add_comment')]
     public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $file = "https://img.freepik.com/vecteurs-libre/caricature-chien-beagle-fond-blanc_1308-68249.jpg?w=2000";
@@ -59,6 +59,7 @@ class CommentController extends AbstractController
                 'note' => '3',
                 'text' => 'lulululululululululul',
                 'image' => "/images/tisha.png",
+                'date' => '15.04.2023',
             ],
             1 => [
                 'pseudo' => 'ticha',
@@ -66,6 +67,7 @@ class CommentController extends AbstractController
                 'note' => '5',
                 'text' => 'miaoumiaoumioaumiaou',
                 'image' => "/images/tisha.png",
+                'date' => "23.01.2023"
             ]
         ];
 
