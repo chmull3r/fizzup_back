@@ -26,7 +26,7 @@
         </div>
 
         <div class="d-flex justify-content-between my-4">
-            <h2 class="">Donnes ton avis !</h2>
+            <h2 class="">Donne ton avis !</h2>
             <div>
                 {#  <a style="display: contents">
                     <button class="btn btn-sm btn-secondary">Add a Comment</button>
@@ -35,30 +35,33 @@
                     <button class="btn btn-sm btn-secondary">Cancel</button>
                 </a>
                 #}
-                <a style="display: contents" href="{{ path('app_add_comment') }}">
-                    <button class="btn btn-sm btn-warning">Submit a Comment</button>
-                </a>
             </div>
         </div>
 
         <div class="q-container">
-            <form class="pl-4 pt-4 pr-4 pb-4">
+            <form class="pl-4 pt-4 pr-4 pb-4" action="{{ path('app_add_comment') }}" method="POST">
+                <div>
+                    <a style="display: contents">
+                        <button class="btn btn-sm btn-warning">Submit a Comment</button>
+                    </a>
+                </div>
                 <div style="display:flex" class="mb-4 justify-content-center">
                     <img style="width: 150px; height: 150px;" src="{{ asset('/images/magic-photo.png') }}" class="img-thumbnail" alt="...">
+                    <input type="image" name="image" value="{{ asset('/images/magic-photo.png') }}" hidden>
                 </div>
                 <div class="row mb-4">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="my pseudo..." id="pseudo" aria-label="pseudo">
+                        <input type="text" class="form-control" placeholder="my pseudo..." id="pseudo" name="pseudo" aria-label="pseudo">
                     </div>
                     <div class="col">
-                        <input type="email" class="form-control" placeholder="my email@awesome.com" aria-label="email">
+                        <input type="email" class="form-control" placeholder="my email@awesome.com" name="email" aria-label="email">
                     </div>
                 </div>
                 <div class="mb-3">
-                    <textarea placeholder="je pense que..." class="form-control" id="text" rows="3"></textarea>
+                    <textarea placeholder="je pense que..." class="form-control" id="opinion" name="opinion" rows="3"></textarea>
                 </div>
-                <label for="note" class="form-label">De 0 à 5 <i class="fa fa-star" style="color: #ffdd00;"></i></label>
-                <input type="range" class="form-range" min="0" max="5" id="note">
+                <label for="note" class="form-label">Note l'expérience de 0 à 5 <i class="fa fa-star" style="color: #ffdd00;"></i></label>
+                <input type="range" class="form-range" name=vote" min="0" max="5" id="note">
             </form>
         </div>
 
@@ -68,7 +71,7 @@
             <h3 class="">Anciens Commentaires <span style="font-size:1.2rem;">({{ comments|length }})</span></h3>
             <ul class="nav nav-pills">
                 <li class="nav-item">
-                    <a class="nav-link" href="#scrollspyHeading1">Date <i class="fa fa-arrow-up"></i></a>
+                    <a class="nav-link" href="{{ path('app_comments_list', { sortType: 'date', sortValue: 'ASC' }) }}">Date <i class="fa fa-arrow-up"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#scrollspyHeading1">Date <i class="fa fa-arrow-down"></i></a>
@@ -90,9 +93,9 @@
                             <img src="{{ asset(comment.image) }}" width="50" height="50">
                         </div>
                         <div class="mr-3 pt-2 col-9">
-                            {{ comment.text }}
+                            {{ comment.opinion }}
                             <p class="mb-0">-- {{ comment.pseudo }} -- {{ comment.email }}</p>
-                            <p style="font-style: italic; font-size: 0.8rem; text-transform: lowercase; color: #6c757d">Posté le {{ comment.date }}</p>
+                            <p style="font-style: italic; font-size: 0.8rem; text-transform: lowercase; color: #6c757d">Posté le {{ comment.date|date("d/m/Y") }}</p>
                         </div>
                         <div class="note-stars flex-fill pt-2 col" style="min-width: 90px;">
                             {% set yellow_stars = comment.note %}

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Comment;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\AbstractType;
@@ -20,10 +21,11 @@ class CommentType extends AbstractType
             ->add('pseudo', TextType::class)
             ->add('email', EmailType::class)
             ->add('note', IntegerType::class)
-            ->add('text', TextType::class)
+            ->add('opinion', TextType::class)
             ->add('image', FileType::class, [
                 'mapped' => false
             ])
+            ->add('date', DateTimeType::class)
             ->add('save', SubmitType::class)
         ;
     }

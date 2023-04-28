@@ -13,37 +13,35 @@ use App\Entity\Comment;
 
 class CommentController extends AbstractController
 {
-    #[Route('/comment/new', name: 'app_add_comment')]
+    #[Route('/comment/new', name: 'app_add_comment', methods:'POST')]
     public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $file = "https://img.freepik.com/vecteurs-libre/caricature-chien-beagle-fond-blanc_1308-68249.jpg?w=2000";
         $comment = new Comment();
-        $comment->setPseudo('Keyboard');
-        $comment->setEmail('coucou@coucou.fr');
-        $comment->setNote(5);
-        $comment->setText('Ergonomic and stylish!');
-        $comment->setImage($file);
-
+        $comment->setDate(new \DateTime());
         // check if data respect formType rules
         $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        dd($form->getData());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            dd($form['image']->getData());
+        if ($request->isMethod('POST')) {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $comment = $form->getData();
+                dd($comment);
+            }
         }
         // tell Doctrine you want to (eventually) save the Product (no queries yet)
-        // $entityManager->persist($comment);
+        $entityManager->persist($comment);
 
         // actually executes the queries (i.e. the INSERT query)
-        // $entityManager->flush();
+        $entityManager->flush();
 
         return new JsonResponse(
-           ['form' => $form]
-            //['result' => $comment->getId()]
+           ['result' => $comment->getId()]
         );
     }
 
     #[Route('/comments', name: 'app_comments_list')]
-    public function list(): Response
+    public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = [
             'image' => '/images/magic-photo.png',
@@ -52,24 +50,26 @@ class CommentController extends AbstractController
             'content' => "ouiuouiouiuouiuouiuouiuouiu"
         ];
 
-        $commentsList = [
-            0 => [
-                'pseudo' => 'troisticha',
-                'email' => 'troisticha@miaou.fr',
-                'note' => '3',
-                'text' => 'lulululululululululul',
-                'image' => "/images/tisha.png",
-                'date' => '15.04.2023',
-            ],
-            1 => [
-                'pseudo' => 'ticha',
-                'email' => 'ticha@miaou.fr',
-                'note' => '5',
-                'text' => 'miaoumiaoumioaumiaou',
-                'image' => "/images/tisha.png",
-                'date' => "23.01.2023"
-            ]
-        ];
+        $commentsList = $entityManager->getRepository(Comment::class)->findBy([], ['date' => 'DESC']);
+        // Opinion examples
+//        $commentsList = [
+//            0 => [
+//                'pseudo' => 'troisticha',
+//                'email' => 'troisticha@miaou.fr',
+//                'note' => '3',
+//                'text' => 'lulululululululululul',
+//                'image' => "/images/tisha.png",
+//                'date' => '15.04.2023',
+//            ],
+//            1 => [
+//                'pseudo' => 'ticha',
+//                'email' => 'ticha@miaou.fr',
+//                'note' => '5',
+//                'text' => 'miaoumiaoumioaumiaou',
+//                'image' => "/images/tisha.png",
+//                'date' => "23.01.2023"
+//            ]
+//        ];
 
         return $this->render('comment/index.html.twig', [
             'article' => $article,
