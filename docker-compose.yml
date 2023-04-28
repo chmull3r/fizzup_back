@@ -3,7 +3,8 @@ services:
   # Mysql database container
   db:
     image: mysql
-    container_name: db_symfony
+    container_name: db_cosmic
+    hostname: db_cosmic
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: user
@@ -13,12 +14,13 @@ services:
     ports:
       - 3306:3306
     networks:
-      - tutorial
+      - cosmic
 
   # Symfony apache project container
   www:
     build: docker/php
-    container_name: api_symfony
+    container_name: api_cosmic
+    hostname: api_cosmic
     ports:
       - 8740:80
     volumes:
@@ -26,12 +28,9 @@ services:
       - ./:/var/www/charlotte
     restart: always
     networks:
-      - tutorial
+      - cosmic
     depends_on:
       - db
 
 networks:
-  tutorial:
-
-volumes:
-  db-data:
+  cosmic:
