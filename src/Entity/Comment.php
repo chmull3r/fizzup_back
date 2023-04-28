@@ -14,7 +14,7 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 255)]
@@ -24,10 +24,13 @@ class Comment
     private ?int $note = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $text = null;
+    private ?string $opinion = null;
 
-    #[ORM\Column(type: Types::BINARY, nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private $image = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
     public function getId(): ?int
     {
@@ -70,14 +73,14 @@ class Comment
         return $this;
     }
 
-    public function getText(): ?string
+    public function getOpinion(): ?string
     {
-        return $this->text;
+        return $this->opinion;
     }
 
-    public function setText(string $text): self
+    public function setOpinion(string $opinion): self
     {
-        $this->text = $text;
+        $this->opinion = $opinion;
 
         return $this;
     }
@@ -87,9 +90,21 @@ class Comment
         return $this->image;
     }
 
-    public function setImage($image): self
+    public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }
