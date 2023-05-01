@@ -19,24 +19,23 @@ class CommentController extends AbstractController
         $comment = new Comment();
         $comment->setDate(new \DateTime());
         // check if data respect formType rules
-        $form = $this->createForm(CommentType::class, $comment);
+        $form = $this->createForm(CommentType::class, $comment, []);
         $form->handleRequest($request);
-        dd($form->getData());
 
-        if ($request->isMethod('POST')) {
-            if ($form->isSubmitted() && $form->isValid()) {
-                $comment = $form->getData();
-                dd($comment);
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment = $form->getData();
+            // tell Doctrine you want to (eventually) save the Product (no queries yet)
+            $entityManager->persist($comment);
+            // actually executes the queries (i.e. the INSERT query)
+            $entityManager->flush();
+
+            //return new RedirectResponse('/comments');
+            return new JsonResponse(
+                ['result' => $comment->getId()]
+            );
         }
-        // tell Doctrine you want to (eventually) save the Product (no queries yet)
-        $entityManager->persist($comment);
-
-        // actually executes the queries (i.e. the INSERT query)
-        $entityManager->flush();
-
         return new JsonResponse(
-           ['result' => $comment->getId()]
+            ['result' => []]
         );
     }
 
@@ -76,4 +75,5 @@ class CommentController extends AbstractController
             'comments' => $commentsList,
         ]);
     }
+
 }

@@ -23,10 +23,11 @@ class CommentType extends AbstractType
             ->add('note', IntegerType::class)
             ->add('opinion', TextType::class)
             ->add('image', FileType::class, [
-                'mapped' => false
+                'required' => false
             ])
-            ->add('date', DateTimeType::class)
-            ->add('save', SubmitType::class)
+            ->add('date', DateTimeType::class, [
+                'required' => false,
+            ])
         ;
     }
 
