@@ -8,7 +8,6 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,7 +26,15 @@ class CommentType extends AbstractType
             ])
             ->add('date', DateTimeType::class, [
                 'required' => false,
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd HH:mm:ss',
+                'html5' => false,
             ])
+            ->setMethod('POST')
+            ->setAction($options['action'])
+            ->setAttributes([
+                'enctype' => 'multipart/from-data'
+            ]);
         ;
     }
 

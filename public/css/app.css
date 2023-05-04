@@ -123,6 +123,10 @@ fieldset[disabled] .btn-question.active {
     background-color: #FFFFFF;
 }
 
+.article-image {
+    object-fit: cover;
+}
+
 footer {
     background-color: #efefee;
 }
