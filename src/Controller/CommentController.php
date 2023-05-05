@@ -11,19 +11,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Comment;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class CommentController extends AbstractController
 {
+    public function __construct(
+        private SerializerInterface $serializer,
+    ) {
+    }
     #[Route('/comment/new', name: 'app_add_comment', methods:['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $comment = new Comment();
+        $data = $this->serializer->decode($request->getContent(), 'json');
+        $comment = $this->serializer->denormalize($data, Comment::class, 'json');
+
         $comment->setDate(new \DateTime());
-        // check if data respect formType rules
-        $form = $this->createForm(CommentType::class, $comment, [
-            'method' => 'post'
-        ]);
+
+        $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
+        $form->submit($data);
         if ($form->isSubmitted() && $form->isValid()) {
             // If the form was submitted and is valid, update the comment object
             $comment = $form->getData();
@@ -45,7 +51,7 @@ class CommentController extends AbstractController
             $entityManager->flush();
 
             return new JsonResponse(
-                ['result' => $comment->getId()]
+                ['result' => $comment]
             );
         }
 
@@ -66,10 +72,12 @@ class CommentController extends AbstractController
 
         $commentsList = $entityManager->getRepository(Comment::class)->findBy([], ['date' => 'DESC']);
 
-        return $this->render('comment/listAndFormPage.twig', [
-            'article' => $article,
-            'comments' => $commentsList,
-        ]);
+        return new JsonResponse(
+            [
+                'article' => $article,
+                'comments2' => $this->serializer->normalize($commentsList),
+            ]
+        );
     }
 
     private function getFormErrors(FormInterface $form): array
