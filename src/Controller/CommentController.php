@@ -38,12 +38,12 @@ class CommentController extends AbstractController
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 // Use the Symfony Filesystem component to move the file to public/images directory
-                $filename = $this->generateUniqueFileName().'.'.$imageFile->guessExtension();
-                $imageFile->move(
-                    $this->getParameter('/public/images/'),
-                    $filename
-                );
-                $comment->setImage($filename);
+//                $filename = $this->generateUniqueFileName().'.'.$imageFile->guessExtension();
+//                $imageFile->move(
+//                    $this->getParameter('/public/images/'),
+//                    $filename
+//                );
+                $comment->setImage($filename ?? $imageFile);
             }
 
             // Save the comment to the database
@@ -51,7 +51,7 @@ class CommentController extends AbstractController
             $entityManager->flush();
 
             return new JsonResponse(
-                ['result' => $comment]
+                [$this->serializer->normalize($comment)]
             );
         }
 
@@ -61,21 +61,30 @@ class CommentController extends AbstractController
     }
 
     #[Route('/comments', name: 'app_comments_list')]
-    public function list(Request $request, EntityManagerInterface $entityManager): Response
+    public function list(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $article = [
-            'image' => '/images/corgi_in_mountain.jpg',
-            'question' => 'un corgi peut-il marcher 30km dans les Vosges en une seule et même journée ?',
-            'author' => 'HappyRando',
-            'content' => "Ut et accumsan turpis. Aenean fermentum urna in neque convallis mollis. Sed a dictum eros. Sed ex leo, pellentesque at dictum id, gravida ac mauris. Praesent nec pellentesque odio. Duis pharetra, justo ac mattis dignissim, lorem ipsum iaculis odio, quis commodo tellus felis eget eros. Sed iaculis mi ut felis bibendum molestie. In id hendrerit ex. Phasellus gravida porta tortor tempor accumsan. Maecenas tempus enim a congue aliquam."
-        ];
-
         $commentsList = $entityManager->getRepository(Comment::class)->findBy([], ['date' => 'DESC']);
 
         return new JsonResponse(
             [
+                'comments' => $this->serializer->normalize($commentsList),
+            ]
+        );
+    }
+
+    #[Route('/article', name: 'app_article')]
+    public function getArticle(): JsonResponse
+    {
+        $article = [
+            'image' => '/images/corgi_in_mountain.jpg',
+            'title' => 'Randonnée de 30 KM dans les Vosges avec un Corgi en une seule et même journéee',
+            'author' => 'HappyRando',
+            'content' => "Ut et accumsan turpis. Aenean fermentum urna in neque convallis mollis. Sed a dictum eros. Sed ex leo, pellentesque at dictum id, gravida ac mauris. Praesent nec pellentesque odio. Duis pharetra, justo ac mattis dignissim, lorem ipsum iaculis odio, quis commodo tellus felis eget eros. Sed iaculis mi ut felis bibendum molestie. In id hendrerit ex. Phasellus gravida porta tortor tempor accumsan. Maecenas tempus enim a congue aliquam."
+        ];
+
+        return new JsonResponse(
+            [
                 'article' => $article,
-                'comments2' => $this->serializer->normalize($commentsList),
             ]
         );
     }
