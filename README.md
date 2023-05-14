@@ -25,6 +25,12 @@ $ docker-compose up -d
 # vérifier que le container cosmic_ui a démarré (Started | Running)
 $ docker ps -a
 ```
+~ Symfony / Doctrine
+
+```bash
+$ php bin/console doctrine:migrations:migrate  | Jouer les migrations pour build la base de données.
+```
+
 ~ mySQL
 
 ```bash
@@ -44,3 +50,15 @@ init.sql | Provisionner la base de données avec les commentaires pré-enregist
 ```bash
 /article | Récupérer un exemple d'article de randonnée.
 ```
+
+## Sources 
+
+https://medium.com/@meherbensalah4/how-to-dockerize-symfony-project-f06bcd735308
+
+https://nuxtjs.org/deployments/koyeb#dockerize-your-application
+
+[//]: # (https://www.appsloveworld.com/docker/100/18/get-http-api1337-games-neterr-name-not-resolved-for-nuxt-js-pages-using-asyn)
+
+[//]: # ()
+[//]: # (https://stackoverflow.com/questions/55090038/get-http-api1337-games-neterr-name-not-resolved-for-nuxt-js-pages-using-asy)
+

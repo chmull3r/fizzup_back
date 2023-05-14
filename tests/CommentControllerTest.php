@@ -43,33 +43,32 @@ class CommentControllerTest extends WebTestCase
             $this->assertArrayHasKey($key, $responseContent[0]);
         }
     }
+    public function testGetComments(): void
+    {
+        $expected = [
+            'id' => 1,
+            'pseudo' => 'mockPseudo',
+            'email' => 'mockEmail',
+            'note' => 9,
+            'opinion' => "mockOpinion",
+            'date' => "25-04-2023"
+        ];
 
-//    public function testGetComments(): void
-//    {
-//        $expected = [
-//            'id' => 1,
-//            'pseudo' => 'mockPseudo',
-//            'email' => 'mockEmail',
-//            'note' => 9,
-//            'opinion' => "mockOpinion",
-//            'date' => "25-04-2023"
-//        ];
-//
-//        $client = static::createClient();
-//        $crawler = $client->request('GET', '/comments');
-//
-//        $this->assertResponseIsSuccessful();
-//
-//        // Get the response content as an array
-//        $responseContent = json_decode($client->getResponse()->getContent(), true);
-//
-//        if ($this->assertArrayHasKey('comments', $responseContent)) {
-//            // Assert that the response contains the expected keys
-//            foreach ($expected as $key => $value) {
-//                $this->assertArrayHasKey($key, $responseContent['comments']);
-//            }
-//        }
-//    }
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/comments');
+
+        $this->assertResponseIsSuccessful();
+
+        // Get the response content as an array
+        $responseContent = json_decode($client->getResponse()->getContent(), true);
+
+        if ($this->assertArrayHasKey('comments', $responseContent)) {
+            // Assert that the response contains the expected keys
+            foreach ($expected as $key => $value) {
+                $this->assertArrayHasKey($key, $responseContent['comments']);
+            }
+        }
+    }
 
     public function testGetArticle(): void
     {
